@@ -8,12 +8,12 @@ def edit_file(file_path: str, save_path = None):
         text: str = f.read()
         text = move_metadata_to_properties(text = text, 
                                            key = 'People', 
-                                           metadata_keys = ['Creator', 'People'], 
-                                           removed_metadata_keys = ['People'])
+                                           metadata_keys = ['Creator', 'People', 'people'], 
+                                           removed_metadata_keys = ['People', 'people'])
         text = move_metadata_to_properties(text = text, 
                                            key = 'url', 
-                                           metadata_keys = ['Url'], 
-                                           removed_metadata_keys = ['Url'])
+                                           metadata_keys = ['Url', 'url'], 
+                                           removed_metadata_keys = ['Url', 'url'])
     if save_path == None:
         save_path = file_path
     with open(save_path, 'w') as f:
@@ -25,6 +25,16 @@ def move_metadata_to_properties(text: str, key: str, metadata_keys: list, remove
     for metadata_key in removed_metadata_keys:
         new_text = remove_metadata(text = new_text, key = metadata_key)
     return new_text
+
+def add_propeties_base_if_not_exists(text: str):
+    if string_starts_with(text = text, startswith = '---'):
+        return text
+    new_text = text
+    return new_text
+
+def string_starts_with(text: str, startswith: str):
+    """Returns True if string starts with --- and any blanks and line breaks before it."""
+    return re.search(f'\A(\s*|\n*){startswith}', text) != None
 
 def add_property(text: str, key: str, value: str):
     properties = get_properties(text)
