@@ -1,4 +1,6 @@
 import sys
+from pathlib import Path
+
 sys.path.append('./obsidian_markdown')
 
 import move_metadata_to_properties
@@ -45,6 +47,7 @@ def main():
     test_get_property_value()
     test_move_metadata_to_properties()
     test_add_property()
+    test_debug_edit_file()
 
 def test_add_property_to_properties():
     print('[INFO] Testing add proprty to propreties')
@@ -155,6 +158,13 @@ People: Hanny,Henk,[[Louise Barrett]],[[The Dissenter]]
 """
     test_check(result = new_text, base_value = check_result, test = 'Add property')
 
+def test_debug_edit_file():
+    file_path = "D:\\Documents\\Drive\\Obsidian\\Knowledge vault\\Videos episodes\\Louise Barrett, Baboon Societies, Ecology, Embodied Cognition, and Evolutionary Psychology.md"
+    base_path = Path(__file__).parent
+    test_result_path = (base_path /"results/Liouse Barret result.md").resolve()
+    print(test_result_path)
+    move_metadata_to_properties.edit_file(file_path = file_path, save_path = test_result_path)
+
 def test_check(result, base_value, test):
     if result != base_value:
         print(f"[ERROR] {test} test failed")
@@ -163,7 +173,6 @@ def test_check(result, base_value, test):
         print("###################")
     else:
         print(f'[INFO] {test} succeeded')
-
 
 if __name__ == '__main__':
     main()
