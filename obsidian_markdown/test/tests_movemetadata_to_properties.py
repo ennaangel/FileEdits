@@ -48,6 +48,7 @@ def main():
     test_move_metadata_to_properties()
     test_add_property()
     test_debug_edit_file()
+    test_string_starts_with()
 
 def test_add_property_to_properties():
     print('[INFO] Testing add proprty to propreties')
@@ -162,8 +163,36 @@ def test_debug_edit_file():
     file_path = "D:\\Documents\\Drive\\Obsidian\\Knowledge vault\\Videos episodes\\Louise Barrett, Baboon Societies, Ecology, Embodied Cognition, and Evolutionary Psychology.md"
     base_path = Path(__file__).parent
     test_result_path = (base_path /"results/Liouse Barret result.md").resolve()
-    print(test_result_path)
+    print('[INFO] Created debug file: {test_result_path}')
     move_metadata_to_properties.edit_file(file_path = file_path, save_path = test_result_path)
+
+def test_string_starts_with():
+    tests = {
+        '---': {
+            'input': """---
+    ---""",
+            'output': True},
+        "\\n---": {
+            'input': """\n---
+    ---""",
+            'output': True},
+    "  ---": {
+            'input': """\n  ---
+    ---""",
+            'output': True},
+        "\\n  ---": {
+            'input': """\n  ---
+    ---""",
+            'output': True},
+    " random text---": {
+            'input': """ random text---
+    ---""",
+            'output': False},
+    }
+    for test, parameters in tests.items():
+        result = move_metadata_to_properties.string_starts_with(text = parameters['input'], startswith = '---')
+        test_check(result = result, base_value = parameters['output'], test = f'Starts with "{test}"')
+    
 
 def test_check(result, base_value, test):
     if result != base_value:
