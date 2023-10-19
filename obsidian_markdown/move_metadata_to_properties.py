@@ -3,14 +3,21 @@ import re
 folder_path: str = 'D:\\Documents\\Drive\\Obsidian\\Knowledge vault\\Videos episodes'
 file_name: str = 'Louise Barrett, Baboon Societies, Ecology, Embodied Cognition, and Evolutionary Psychology.md'
 
-def edit_file(file_path: str):
+def edit_file(file_path: str, save_path = None):
     with open(file_path) as f:
         text: str = f.read()
         text = move_metadata_to_properties(text = text, 
                                            key = 'People', 
                                            metadata_keys = ['Creator', 'People'], 
                                            removed_metadata_keys = ['People'])
-        print(text)
+        text = move_metadata_to_properties(text = text, 
+                                           key = 'url', 
+                                           metadata_keys = ['Url'], 
+                                           removed_metadata_keys = ['Url'])
+    if save_path == None:
+        save_path = file_path
+    with open(save_path, 'w') as f:
+        f.write(text)
 
 def move_metadata_to_properties(text: str, key: str, metadata_keys: list, removed_metadata_keys: list):
     property_value = get_values_as_string(text = text, metadata_keys = metadata_keys)
