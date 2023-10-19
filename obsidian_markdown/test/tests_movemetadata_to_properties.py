@@ -74,14 +74,12 @@ People: Henk,[[Louise Barrett]],[[The Dissenter]]
                 'error_message': 'Failed existing test value'
             },
         }
-    errors = 0
     for test, parameters in test_cases.items():
         new_properties = move_metadata_to_properties.add_property_to_properties(properties = parameters['input']['properties'], 
                                                            key = parameters['input']['key'],
                                                            value = parameters['input']['value'])
         test_check(result = new_properties, base_value = parameters['output'], test = test)
         
-    print(f"[INFO] Failed tests: {errors}\n")
     return
 
 def test_get_property_value():

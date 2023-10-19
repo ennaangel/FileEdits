@@ -24,7 +24,7 @@ def add_property(text: str, key: str, value: str):
     new_properties = add_property_to_properties(properties = properties, key = key, value = value)
     text = text.replace(properties, new_properties)
     return text
-
+    
 def get_values_as_string(text: str, metadata_keys: list):
     values = []
     for key in metadata_keys:
