@@ -49,6 +49,7 @@ def main():
     test_add_property()
     test_debug_edit_file()
     test_string_starts_with()
+    test_add_propeties_base_if_not_exists()
 
 def test_add_property_to_properties():
     print('[INFO] Testing add proprty to propreties')
@@ -89,7 +90,7 @@ People: Henk,[[Louise Barrett]],[[The Dissenter]]
 def test_get_property_value():
     print('[INFO] Testing get_property_value')
     assert move_metadata_to_properties.get_property_value(properties = PROPERTIES, key = 'People').strip() == '[[The Dissenter]],[[Louise Barrett]]'
-    print('[INFO] get property value passed')
+    print('[INFO] get property value succeeded')
     return
 
 def test_move_metadata_to_properties():
@@ -192,16 +193,38 @@ def test_string_starts_with():
     for test, parameters in tests.items():
         result = move_metadata_to_properties.string_starts_with(text = parameters['input'], startswith = '---')
         test_check(result = result, base_value = parameters['output'], test = f'Starts with "{test}"')
-    
+
+def test_add_propeties_base_if_not_exists():
+    tests = {
+        '  ':{
+            'input': '  ',
+            'output': '---\n---\n  '
+        },
+        '\\n\\n  ':{
+            'input': '\n\n  ',
+            'output': '---\n---\n\n\n  '
+        },
+        '---  ':{
+            'input': '---  ',
+            'output': '---  '
+        },
+        '# Title and stuff  ':{
+            'input': '# Title and stuff  ',
+            'output': '---\n---\n# Title and stuff  '
+        },
+    }
+    for test, parameters in tests.items():
+        result = move_metadata_to_properties.add_propeties_base_if_not_exists(text = parameters['input'])
+        test_check(result = result, base_value = parameters['output'], test = f'Add properties section starts with "{test}"')  
 
 def test_check(result, base_value, test):
     if result != base_value:
-        print(f"[ERROR] {test} test failed")
+        print(f"[ERROR] Test: {test} failed")
         print("###################")
         print(result)
         print("###################")
     else:
-        print(f'[INFO] {test} succeeded')
+        print(f'[INFO] Test: {test} succeeded')
 
 if __name__ == '__main__':
     main()
