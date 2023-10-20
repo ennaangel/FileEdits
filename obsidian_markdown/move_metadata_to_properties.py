@@ -29,7 +29,7 @@ def move_metadata_to_properties(text: str, key: str, metadata_keys: list, remove
 def add_propeties_base_if_not_exists(text: str):
     if string_starts_with(text = text, startswith = '---'):
         return text
-    new_text = text
+    new_text = re.sub("\A", "---\n---\n", text)
     return new_text
 
 def string_starts_with(text: str, startswith: str):
@@ -104,4 +104,4 @@ def listify_string(text_string: str, sep: str = ','):
 
 if __name__ == '__main__':
     file_path: str = folder_path +'\\'+file_name
-    edit_file(file_path = file_path)
+    #edit_file(file_path = file_path)
