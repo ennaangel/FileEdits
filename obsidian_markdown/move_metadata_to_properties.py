@@ -5,7 +5,7 @@ file_name: str = 'Louise Barrett, Baboon Societies, Ecology, Embodied Cognition,
 
 def edit_file(file_path: str, save_path = None):
     with open(file_path) as f:
-        text: str = f.read()
+        text: str = f.read(encoding='utf-8')
         text = add_propeties_base_if_not_exists(text = text)
         text = move_metadata_to_properties(text = text, 
                                            key = 'People', 
@@ -17,7 +17,7 @@ def edit_file(file_path: str, save_path = None):
                                            removed_metadata_keys = ['Url', 'url'])
     if save_path == None:
         save_path = file_path
-    with open(save_path, 'w') as f:
+    with open(save_path, 'w', encoding='utf-8') as f:
         f.write(text)
 
 def move_metadata_to_properties(text: str, key: str, metadata_keys: list, removed_metadata_keys: list):
