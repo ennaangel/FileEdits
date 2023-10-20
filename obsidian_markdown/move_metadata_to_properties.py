@@ -6,6 +6,7 @@ file_name: str = 'Louise Barrett, Baboon Societies, Ecology, Embodied Cognition,
 def edit_file(file_path: str, save_path = None):
     with open(file_path) as f:
         text: str = f.read()
+        text = add_propeties_base_if_not_exists(text = text)
         text = move_metadata_to_properties(text = text, 
                                            key = 'People', 
                                            metadata_keys = ['Creator', 'People', 'people'], 
