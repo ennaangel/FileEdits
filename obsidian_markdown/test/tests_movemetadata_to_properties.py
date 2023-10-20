@@ -47,9 +47,9 @@ def main():
     test_get_property_value()
     test_move_metadata_to_properties()
     test_add_property()
-    test_debug_edit_file()
     test_string_starts_with()
     test_add_propeties_base_if_not_exists()
+    test_debug_edit_file()
 
 def test_add_property_to_properties():
     print('[INFO] Testing add proprty to propreties')
@@ -207,6 +207,14 @@ def test_add_propeties_base_if_not_exists():
         '---  ':{
             'input': '---  ',
             'output': '---  '
+        },
+        '---\\n---':{
+            'input': '---\n---',
+            'output': '---\n---'
+        },
+        '---\\ntext\\n---\\n':{
+            'input': '---\ntext\n---\n',
+            'output': '---\ntext\n---\n'
         },
         '# Title and stuff  ':{
             'input': '# Title and stuff  ',
