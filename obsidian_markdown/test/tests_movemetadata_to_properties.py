@@ -93,7 +93,7 @@ url: https://www.youtube.com/watch?v=T1nxiLARYAk
 aliases:
 tags: src/youtubevideo
 date:  2023-05-02
-People: ["[[John Vervaeke]]", "[[Jonathan Pageau]]", "Henk"]
+People: ["Henk", "[[John Vervaeke]]", "[[Jonathan Pageau]]"]
 url: https://www.youtube.com/watch?v=T1nxiLARYAk
 ---""",
                 'error_message': 'Failed empty test value'
