@@ -77,11 +77,11 @@ def add_new_property_to_properties(properties, key, value):
 def append_property_value_to_properties(properties, key, value):
     """Appens the new values to the already exisitn proprties"""
     cur_values = get_property_value(properties, key)
-    cur_values = listify_string(cur_values)
+    cur_values = listify_property(cur_values)
     all_values = sorted(list(set(cur_values + value)))
     all_values = stringify_list(text_list = all_values)
     new_property = f'{key}: {all_values}\n'
-    properties = re.sub(f'{key}:(.*)\n', new_property, properties)
+    properties = re.sub(f'{key}:(.|\n- )*\n', new_property, properties)
     return properties
 
 def get_metadata(text:str, key: str)-> str:
@@ -101,9 +101,15 @@ def get_properties(text: str)-> str:
     return properties.group()
 
 def get_property_value(properties: str, key: str)-> str:
-    value = re.search(f'(?<={key}:)(.*)(?=\n)', properties).group()
+    value = re.search(f'(?<={key}:)(.|\n- )*', properties).group()
     value = value.strip()
     return value
+
+def listify_property(text_string: str):
+    text_string = text_string.replace('\n- ',',')
+    text_string = text_string.replace('- ',',')
+    list_text = listify_string(text_string = text_string, sep = ',')
+    return list_text
 
 def listify_string(text_string: str, sep: str = ','):
     if text_string == '':
@@ -113,6 +119,7 @@ def listify_string(text_string: str, sep: str = ','):
     list_text: list = text_string.split(sep)
     list_text = [words.strip() for words in list_text]
     list_text = [words.replace('"', '') for words in list_text]
+    list_text = [words for words in list_text if words != '']
     return list_text
 
 def stringify_list(text_list: list)-> str:
@@ -122,4 +129,4 @@ def stringify_list(text_list: list)-> str:
 
 if __name__ == '__main__':
     file_path: str = folder_path +'\\'+file_name
-    #edit_file(file_path = file_path)
+    edit_file(file_path = file_path)
