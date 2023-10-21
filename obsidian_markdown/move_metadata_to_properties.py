@@ -21,8 +21,8 @@ def edit_file(file_path: str, save_path = None):
         f.write(text)
 
 def move_metadata_to_properties(text: str, key: str, metadata_keys: list, removed_metadata_keys: list):
-    property_value = get_values_as_string(text = text, metadata_keys = metadata_keys)
-    new_text = add_property(text = text, key = key, value = property_value)
+    property_value = get_values_as_list(text = text, metadata_keys = metadata_keys)
+    new_text = add_property(text = text, key = key, values = property_value)
     for metadata_key in removed_metadata_keys:
         new_text = remove_metadata(text = new_text, key = metadata_key)
     return new_text
@@ -37,9 +37,9 @@ def string_starts_with(text: str, startswith: str):
     """Returns True if string starts with --- and any blanks and line breaks before it."""
     return re.search(f'\A(\s*|\n*){startswith}', text) != None
 
-def add_property(text: str, key: str, value: str):
+def add_property(text: str, key: str, values: list):
     properties = get_properties(text)
-    new_properties = add_property_to_properties(properties = properties, key = key, value = value)
+    new_properties = add_property_to_properties(properties = properties, key = key, values = values)
     text = text.replace(properties, new_properties)
     return text
     
@@ -52,17 +52,25 @@ def get_values_as_string(text: str, metadata_keys: list):
     values = ','.join(values)
     return values
 
-def add_property_to_properties(properties, key, value):
+def get_values_as_list(text: str, metadata_keys: list)-> list:
+    values = []
+    for key in metadata_keys:
+        value = get_metadata(text = text, key = key)
+        value = listify_string(text_string = value)
+        values = values + value
+    return values
+
+def add_property_to_properties(properties: str, key: str, values: list):
     """Add a new property to the old properties as a key value pair"""
-    if value == '':
+    if values == '' or []:
         return properties
     if re.search(f'{key}:', properties) != None:
-        return append_property_value_to_properties(properties, key, value)
-    return add_new_property_to_properties(properties, key, value)
+        return append_property_value_to_properties(properties, key, values)
+    return add_new_property_to_properties(properties, key, values)
 
 def add_new_property_to_properties(properties, key, value):
     """Adds a new propertie to proprties"""
-    new_property = key+': '+value
+    new_property = key+': '+ stringify_list(text_list = value)
     properties = re.sub('\n---', repl = f'\n{new_property}\n---', string = properties)
     return properties
 
@@ -70,9 +78,8 @@ def append_property_value_to_properties(properties, key, value):
     """Appens the new values to the already exisitn proprties"""
     cur_values = get_property_value(properties, key)
     cur_values = listify_string(cur_values)
-    value = listify_string(value)
     all_values = sorted(list(set(cur_values + value)))
-    all_values = ','.join(all_values)
+    all_values = stringify_list(text_list = all_values)
     new_property = f'{key}: {all_values}\n'
     properties = re.sub(f'{key}:(.*)\n', new_property, properties)
     return properties
@@ -93,15 +100,22 @@ def get_properties(text: str)-> str:
         return ''
     return properties.group()
 
-def get_property_value(properties: str, key: str):
+def get_property_value(properties: str, key: str)-> str:
     return re.search(f'(?<={key}:)(.*)(?=\n)', properties).group()
 
 def listify_string(text_string: str, sep: str = ','):
     if text_string == '':
         return []
+    text_string = re.sub('(?<!\[)\[(?!\[)','',text_string) #Remove single apperaneces of [
+    text_string = re.sub('(?<!\])\](?!\])','',text_string) #Remove single apperaneces of ]
     list_text: list = text_string.split(sep)
     list_text = [words.strip() for words in list_text]
     return list_text
+
+def stringify_list(text_list: list)-> str:
+    text_string = str(text_list)
+    text_string = text_string.replace("'", '"')
+    return text_string
 
 if __name__ == '__main__':
     file_path: str = folder_path +'\\'+file_name
