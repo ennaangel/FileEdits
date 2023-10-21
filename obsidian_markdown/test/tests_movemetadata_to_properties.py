@@ -10,7 +10,7 @@ PROPERTIES = """
 aliases:
 tags: src/youtubevideo,ToDo/Cook,
 date:  2021-12-05
-People: [[The Dissenter]],[[Louise Barrett]]
+People: ["[[The Dissenter]]", "[[Louise Barrett]]"]
 ---"""
 TEXT: str = """---
 aliases:
@@ -50,6 +50,8 @@ def main():
     test_string_starts_with()
     test_add_propeties_base_if_not_exists()
     test_debug_edit_file()
+    test_stringify_list()
+    test_listify_string()
 
 def test_add_property_to_properties():
     print('[INFO] Testing add proprty to propreties')
@@ -63,18 +65,51 @@ def test_add_property_to_properties():
                 'output':  PROPERTIES,
                 'error_message': 'Failed empty test value'
             },
+        'one_two':{
+            'input': {
+                'properties': """---\n---""",
+                'key': 'Counts',
+                'value': ["[[One]]","[[Two]]"]
+                    },
+                'output':  """---
+Counts: ["[[One]]", "[[Two]]"]\n---""",
+                'error_message': 'Failed empty test value'
+            },
+        'adding item to long format list':{
+            'input': {
+                'properties': """---
+aliases:
+tags: src/youtubevideo
+date:  2023-05-02
+People: 
+- "[[John Vervaeke]]"
+- "[[Jonathan Pageau]]"
+url: https://www.youtube.com/watch?v=T1nxiLARYAk
+---""",
+                'key': 'People',
+                'value': ["Henk"]
+                    },
+                'output': """---
+aliases:
+tags: src/youtubevideo
+date:  2023-05-02
+People: ["[[John Vervaeke]]", "[[Jonathan Pageau]]", "Henk"]
+url: https://www.youtube.com/watch?v=T1nxiLARYAk
+---""",
+                'error_message': 'Failed empty test value'
+            },
         'existing_key':{
             'input': {
                 'properties': PROPERTIES,
                 'key': 'People',
-                'value': 'Henk'
+                'value': ["Henk"]
                     },
                 'output':  """
 ---
 aliases:
 tags: src/youtubevideo,ToDo/Cook,
 date:  2021-12-05
-People: Henk,[[Louise Barrett]],[[The Dissenter]]
+People: ["Henk", "[[Louise Barrett]]", "[[The Dissenter]]"]
 ---""",
                 'error_message': 'Failed existing test value'
             },
@@ -82,15 +117,15 @@ People: Henk,[[Louise Barrett]],[[The Dissenter]]
     for test, parameters in test_cases.items():
         new_properties = move_metadata_to_properties.add_property_to_properties(properties = parameters['input']['properties'], 
                                                            key = parameters['input']['key'],
-                                                           value = parameters['input']['value'])
+                                                           values = parameters['input']['value'])
         test_check(result = new_properties, base_value = parameters['output'], test = test)
         
     return
 
 def test_get_property_value():
     print('[INFO] Testing get_property_value')
-    assert move_metadata_to_properties.get_property_value(properties = PROPERTIES, key = 'People').strip() == '[[The Dissenter]],[[Louise Barrett]]'
-    print('[INFO] get property value succeeded')
+    result = move_metadata_to_properties.get_property_value(properties = PROPERTIES, key = 'People')
+    test_check(result = result, base_value = '["[[The Dissenter]]", "[[Louise Barrett]]"]', test = "get Property value")
     return
 
 def test_move_metadata_to_properties():
@@ -102,7 +137,7 @@ def test_move_metadata_to_properties():
 aliases:
 tags: src/youtubevideo,ToDo/Cook,
 date:  2021-12-05
-People: [[Louise Barrett]],[[The Dissenter]]
+People: ["[[Louise Barrett]]", "[[The Dissenter]]"]
 ---
 # Louise Barrett, Baboon Societies, Ecology, Embodied Cognition, and Evolutionary Psychology
 ---
@@ -129,12 +164,12 @@ People: [[Louise Barrett]],[[The Dissenter]]
     test_check(result = new_text, base_value = test_result, test = 'move_metadata_to_properties')
 
 def test_add_property():
-    new_text = move_metadata_to_properties.add_property(text = TEXT, key = 'People', value = 'Henk, Hanny')
+    new_text = move_metadata_to_properties.add_property(text = TEXT, key = 'People', values = ["Henk","Hanny"])
     check_result = """---
 aliases:
 tags: src/youtubevideo,ToDo/Cook,
 date:  2021-12-05
-People: Hanny,Henk,[[Louise Barrett]],[[The Dissenter]]
+People: ["Hanny", "Henk", "[[Louise Barrett]]", "[[The Dissenter]]"]
 ---
 # Louise Barrett, Baboon Societies, Ecology, Embodied Cognition, and Evolutionary Psychology
 ---
@@ -233,6 +268,36 @@ def test_check(result, base_value, test):
         print("###################")
     else:
         print(f'[INFO] Test: {test} succeeded')
+
+def test_stringify_list():
+    tests = {
+        '["one", "two"]':{
+            'input':["one","two"],
+            'output':'["one", "two"]'
+        }
+    }
+    for test, parameters in tests.items():
+        result = move_metadata_to_properties.stringify_list(text_list = parameters['input'])
+        test_check(result = result, base_value = parameters['output'], test = f'Stringify list "{test}"')
+
+def test_listify_string():
+    tests = {
+        'one, two':{
+            'input': 'one, two',
+            'output': ['one', 'two']
+        },
+        '[one, two]':{
+            'input': '[one, two]',
+            'output': ['one', 'two']
+        },
+        '["[[one]]", "[[two]]"]':{
+            'input': '["[[one]]", "[[two]]"]',
+            'output': ['"[[one]]"', '"[[two]]"']
+        },
+    }
+    for test, parameters in tests.items():
+        result = move_metadata_to_properties.listify_string(text_string = parameters['input'])
+        test_check(result = result, base_value = parameters['output'], test = f'Listify string "{test}"')
 
 if __name__ == '__main__':
     main()
