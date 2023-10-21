@@ -101,7 +101,9 @@ def get_properties(text: str)-> str:
     return properties.group()
 
 def get_property_value(properties: str, key: str)-> str:
-    return re.search(f'(?<={key}:)(.*)(?=\n)', properties).group()
+    value = re.search(f'(?<={key}:)(.*)(?=\n)', properties).group()
+    value = value.strip()
+    return value
 
 def listify_string(text_string: str, sep: str = ','):
     if text_string == '':
