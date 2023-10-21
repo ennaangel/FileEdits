@@ -292,7 +292,7 @@ def test_listify_string():
         },
         '["[[one]]", "[[two]]"]':{
             'input': '["[[one]]", "[[two]]"]',
-            'output': ['"[[one]]"', '"[[two]]"']
+            'output': ['[[one]]', '[[two]]']
         },
     }
     for test, parameters in tests.items():
