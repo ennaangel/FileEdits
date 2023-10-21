@@ -9,12 +9,16 @@ def edit_file(file_path: str, save_path = None):
         text = add_propeties_base_if_not_exists(text = text)
         text = move_metadata_to_properties(text = text, 
                                            key = 'People', 
-                                           metadata_keys = ['Creator', 'People', 'people'], 
+                                           metadata_keys = ['Creator', 'People', 'people', 'Writer'], 
                                            removed_metadata_keys = ['People', 'people'])
         text = move_metadata_to_properties(text = text, 
                                            key = 'url', 
                                            metadata_keys = ['Url', 'url'], 
                                            removed_metadata_keys = ['Url', 'url'])
+        text = move_metadata_to_properties(text = text, 
+                                           key = 'themes', 
+                                           metadata_keys = ['Themes', 'themes'], 
+                                           removed_metadata_keys = ['Themes', 'themes'])
     if save_path == None:
         save_path = file_path
     with open(save_path, 'w', encoding='utf-8') as f:
