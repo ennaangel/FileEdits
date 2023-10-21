@@ -112,6 +112,7 @@ def listify_string(text_string: str, sep: str = ','):
     text_string = re.sub('(?<!\])\](?!\])','',text_string) #Remove single apperaneces of ]
     list_text: list = text_string.split(sep)
     list_text = [words.strip() for words in list_text]
+    list_text = [words.replace('"', '') for words in list_text]
     return list_text
 
 def stringify_list(text_list: list)-> str:
