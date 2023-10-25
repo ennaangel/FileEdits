@@ -10,4 +10,8 @@ class PrintLogger(iLogger):
     def error(self, message: str):
         print(f'[ERROR] {message}')
 
+    def debug(self, message: str):
+        print("------- DEBUG -------")
+        print(message)
+        print("------- DEBUG -------")
     
