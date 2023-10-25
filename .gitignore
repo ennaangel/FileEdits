@@ -4,3 +4,6 @@ obsidian_markdown/__pycache__/**
 
 # Ignore results folder
 obsidian_markdown/test/results/**
+
+#Ignore pycache files
+*.pyc
