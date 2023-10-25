@@ -1,9 +1,15 @@
 import sys
 from pathlib import Path
 
+
 sys.path.append('./obsidian_markdown')
+sys.path.append('./obsidian_markdown/loggers')
 
 import move_metadata_to_properties
+
+#Setup Logger
+from loggers.PrintLogger import PrintLogger
+Logger = PrintLogger()
 
 PROPERTIES = """
 ---
@@ -54,7 +60,7 @@ def main():
     test_listify_string()
 
 def test_add_property_to_properties():
-    print('[INFO] Testing add proprty to propreties')
+    Logger.info(' Testing add proprty to propreties')
     test_cases = {
         'empty_values':{
             'input': {
@@ -123,7 +129,7 @@ People: ["Henk", "[[Louise Barrett]]", "[[The Dissenter]]"]
     return
 
 def test_get_property_value():
-    print('[INFO] Testing get_property_value')
+    Logger.info(' Testing get_property_value')
     result = move_metadata_to_properties.get_property_value(properties = PROPERTIES, key = 'People')
     test_check(result = result, base_value = '["[[The Dissenter]]", "[[Louise Barrett]]"]', test = "get Property value")
     return
@@ -199,7 +205,7 @@ def test_debug_edit_file():
     file_path = "D:\\Documents\\Drive\\Obsidian\\Knowledge vault\\Videos episodes\\Louise Barrett, Baboon Societies, Ecology, Embodied Cognition, and Evolutionary Psychology.md"
     base_path = Path(__file__).parent
     test_result_path = (base_path /"results/Liouse Barret result.md").resolve()
-    print('[INFO] Created debug file: {test_result_path}')
+    Logger.info('Created debug file: {test_result_path}')
     move_metadata_to_properties.edit_file(file_path = file_path, save_path = test_result_path)
 
 def test_string_starts_with():
@@ -262,12 +268,10 @@ def test_add_propeties_base_if_not_exists():
 
 def test_check(result, base_value, test):
     if result != base_value:
-        print(f"[ERROR] Test: {test} failed")
-        print("###################")
-        print(result)
-        print("###################")
+        Logger.error(f"Test: {test} failed")
+        Logger.debug(result)
     else:
-        print(f'[INFO] Test: {test} succeeded')
+        Logger.info(f'Test: {test} succeeded')
 
 def test_stringify_list():
     tests = {
