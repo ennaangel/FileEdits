@@ -1,9 +1,13 @@
 import os
 from os.path import isfile, join
 
+sys.path.append('./obsidian_markdown/config')
+
+import configs
 import move_metadata_to_properties
 
-folder_path: str = 'D:\\Documents\\Drive\\Obsidian\\Knowledge vault\\Videos episodes'
+
+folder_path: str = configs.JsonConfigurator("obsidian_markdown/config/meta_to_props_config.json")
 
 def get_file_list(path: str)-> list:
     all_items = os.listdir(path)
